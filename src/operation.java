@@ -6,47 +6,58 @@ import java.util.Scanner;
 import java.util.Stack;
 
 
-public class operation {
-
+public class operation 
+{
     private Stack<Long> numberStack = null;//数字栈
     private Stack<Character> symbolStack = null;//符号栈
 
-    public  long caculate(String numStr) {
+    public  long caculate(String numStr) 
+    {
         boolean exp=true;//判断运算式是否合法
         numStr = removeStrSpace(numStr); // 去除空格
-        if (numStr.length() > 1 && !"=".equals(numStr.charAt(numStr.length() - 1) + "")) {
+        if (numStr.length() > 1 && !"=".equals(numStr.charAt(numStr.length() - 1) + "")) 
+        {
             numStr += "=";
         }
-        if (!isStandard(numStr)) {
+        if (!isStandard(numStr)) 
+        {
             System.err.println("错误：算术表达式有误！"); // 检查表达式是否合法
             return 0;
         }
         numberStack = new Stack<Long>(); // 初始化栈
         symbolStack = new Stack<Character>();
         StringBuffer temp = new StringBuffer();
-        for (int i = 0; i < numStr.length(); i++) {
+        for (int i = 0; i < numStr.length(); i++) 
+        {
             char ch = numStr.charAt(i); // 获取一个字符
-            if (isNumber(ch)) { // 判断当前字符是否为数字
+            if (isNumber(ch))   // 判断当前字符是否为数字
+            { 
                 temp.append(ch); 
-            } else { 
+            } 
+            else 
+            { 
                 String tempStr = temp.toString(); 
-                if (!tempStr.isEmpty()) {
+                if (!tempStr.isEmpty()) 
+                {
                     long num = Long.parseLong(tempStr); 
                     numberStack.push(num); // 将数字压栈
                     temp = new StringBuffer(); // 重置数字缓存
                 }
                 // 判断运算符的优先级
-                while (!comparePri(ch) && !symbolStack.empty()) {
+                while (!comparePri(ch) && !symbolStack.empty()) 
+                {
                     long b = numberStack.pop(); 
                     long a = numberStack.pop();
                     long midtemp=0;
-                    switch ((char) symbolStack.pop()) {
+                    switch ((char) symbolStack.pop()) 
+                    {
                         case '+':
                             numberStack.push(a + b);
                             break;
                         case '-':
                             midtemp = a - b;
-                            if(midtemp<0) {   //判断减法结果是否为负数
+                            if(midtemp<0) 
+                            {   //判断减法结果是否为负数
                                 midtemp=0;
                                 exp = false;
                             }
@@ -56,7 +67,8 @@ public class operation {
                             numberStack.push(a * b);
                             break;
                         case '/':     //判断除法是否合法，且能整除
-                            if(b==0) {
+                            if(b==0) 
+                            {
                                 b=1;
                                 exp = false;
                             }
@@ -69,9 +81,11 @@ public class operation {
                             break;
                     }
                 }
-                if (ch != '=') {
+                if (ch != '=') 
+                {
                     symbolStack.push(new Character(ch)); // 符号入栈
-                    if (ch == ')') { // 去右括号
+                    if (ch == ')')  // 去右括号
+                    {
                         symbolStack.pop();
                         symbolStack.pop();
                     }
@@ -86,18 +100,20 @@ public class operation {
     }
 
      //去除字符串中的所有空格
-    String removeStrSpace(String str) {
+    String removeStrSpace(String str) 
+    {
         return str != null ? str.replaceAll(" ", "") : "";
     }
 
-   
     //检查算术表达式的基本合法性，符合返回true，否则false
-    private boolean isStandard(String numStr) {
+    private boolean isStandard(String numStr) 
+    {
         if (numStr == null || numStr.isEmpty()) // 表达式不能为空
             return false;
         Stack<Character> stack = new Stack<Character>(); // 用来保存括号，检查左右括号是否匹配
         boolean b = false; 
-        for (int i = 0; i < numStr.length(); i++) {
+        for (int i = 0; i < numStr.length(); i++) 
+        {
             char n = numStr.charAt(i);
             // 判断字符是否合法
             if (!(isNumber(n) || "(".equals(n + "") || ")".equals(n + "")
@@ -106,15 +122,18 @@ public class operation {
                     || "=".equals(n + ""))) {
                 return false;
             }
-            if ("(".equals(n + "")) {
+            if ("(".equals(n + "")) 
+            {
                 stack.push(n);
             }
-            if (")".equals(n + "")) { 
+            if (")".equals(n + ""))
+            { 
                 if (stack.isEmpty() || !"(".equals((char) stack.pop() + "")) // 括号是否匹配
                     return false;
             }
             // 检查是否有多个'='号
-            if ("=".equals(n + "")) {
+            if ("=".equals(n + ""))
+            {
                 if (b)
                     return false;
                 b = true;
@@ -130,31 +149,38 @@ public class operation {
     }
 
    //判断数字
-    private boolean isNumber(char num) {
+    private boolean isNumber(char num)
+    {
         if (num >= '0' && num <= '9')
             return true;
         return false;
     }
 
    //比较优先级
-    private boolean comparePri(char symbol) {
-        if (symbolStack.empty()) { 
+    private boolean comparePri(char symbol) 
+    {
+        if (symbolStack.empty())
+        { 
             return true;
         }
         char top = (char) symbolStack.peek(); // 查看堆栈顶部的对象
-        if (top == '(') {
+        if (top == '(') 
+        {
             return true;
         }
-        switch (symbol) {
+        switch (symbol) 
+        {
             case '(': // 优先级最高
                 return true;
-            case '*': {
+            case '*': 
+            {
                 if (top == '+' || top == '-') // 优先级比+和-高
                     return true;
                 else
                     return false;
             }
-            case '/': {
+            case '/': 
+            {
                 if (top == '+' || top == '-') // 优先级比+和-高
                     return true;
                 else
@@ -175,7 +201,8 @@ public class operation {
     }
 
 
-    public static void main(String args[]) {
+    public static void main(String args[]) 
+    {
 
         int num;
         int writer=0;
